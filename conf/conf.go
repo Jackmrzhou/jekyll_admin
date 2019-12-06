@@ -12,6 +12,8 @@ type Config struct {
 		Username string
 		Password string
 	}
+	JekyllRoot string
+	Local bool
 }
 
 func InitConfig(dir string) (*Config, error) {

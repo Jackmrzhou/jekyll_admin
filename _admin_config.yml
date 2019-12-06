@@ -1,2 +1,13 @@
 # demo configuration
+
+#using token for authentication
 token: itisasecret
+#or using username/password
+# username: jekyll_admin
+# password: admin
+
+#jekyll's root directory
+jekyll_root: ""
+
+# local or remote
+local: true

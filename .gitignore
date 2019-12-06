@@ -2,3 +2,4 @@
 *.exe
 *.tmp
 *.exe~
+_post/
