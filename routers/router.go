@@ -34,6 +34,16 @@ func InitRouter(config *conf.Config) *gin.Engine {
 		postAPI.POST("/", postController.CreatePost)
 		postAPI.PATCH("/", postController.UpdatePost)
 		postAPI.PUT("/", postController.UploadPost)
+		postAPI.GET("/", postController.ReadPost)
+	}
+
+	fileController := controllers.FileController{
+		FileSystem: fileSystem,
+	}
+
+	fileAPI := api.Group("/file")
+	{
+		fileAPI.GET("/list", fileController.List)
 	}
 	return router
 }

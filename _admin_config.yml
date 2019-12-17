@@ -7,7 +7,7 @@ token: itisasecret
 # password: admin
 
 #jekyll's root directory
-jekyll_root: ""
+jekyll_root: "."
 
 # local or remote
 local: true

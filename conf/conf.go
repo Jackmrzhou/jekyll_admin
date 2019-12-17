@@ -12,7 +12,7 @@ type Config struct {
 		Username string
 		Password string
 	}
-	JekyllRoot string
+	JekyllRoot string `yaml:"jekyll_root"`
 	Local bool
 }
 

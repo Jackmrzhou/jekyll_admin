@@ -51,7 +51,7 @@ type CreatePostReq struct {
 
 func (pc *PostController) CreatePost(ctx *gin.Context) {
 	var post CreatePostReq
-	if err := ctx.BindJSON(&post); err != nil {
+	if err := ctx.ShouldBindJSON(&post); err != nil {
 		logrus.Error(err)
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 1,
@@ -126,4 +126,33 @@ func (pc *PostController) UpdatePost(ctx *gin.Context) {
 		"code": 0,
 		"message": "updating post successfully",
 	})
+}
+
+type readPostReq struct {
+	Filename string `form:"filename" binding:"required"`
+}
+
+func (pc *PostController) ReadPost(ctx *gin.Context) {
+	var query readPostReq
+	if err := ctx.ShouldBindQuery(&query); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"message": "bad request",
+		})
+		return
+	}
+
+	if data, err := pc.ReadFile(filepath.FromSlash("_post/" + query.Filename)); err != nil {
+		logrus.WithError(err).Error("reading post failed")
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"message": "internal error",
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"message": "",
+			"content": string(data),
+		})
+	}
 }
