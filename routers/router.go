@@ -6,6 +6,7 @@ import (
 	"jekyll_admin/conf"
 	"jekyll_admin/controllers"
 	"jekyll_admin/filesystem"
+	"jekyll_admin/middleware"
 )
 
 func InitRouter(config *conf.Config) *gin.Engine {
@@ -21,6 +22,8 @@ func InitRouter(config *conf.Config) *gin.Engine {
 		authAPI.POST("/token", authController.AuthToken)
 		authAPI.POST("/user", authController.AuthUser)
 	}
+
+	api.Use(middleware.AuthMiddleware())
 
 	var fileSystem filesystem.FileSystem
 	if config.Local {

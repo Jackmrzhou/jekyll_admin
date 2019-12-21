@@ -14,5 +14,5 @@ func main() {
 	} else {
 		app = routers.InitRouter(conf)
 	}
-	app.Run(":8080")
+	app.Run("127.0.0.1:8081")
 }

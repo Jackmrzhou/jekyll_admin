@@ -22,7 +22,7 @@ func (pc *PostController) UploadPost(ctx *gin.Context) {
 	} else {
 		if f, err := file.Open(); err == nil {
 			if data, err := ioutil.ReadAll(f); err == nil {
-				if err := pc.UpdateFile(filepath.FromSlash("_post/"+file.Filename), data); err == nil{
+				if err := pc.UpdateFile(filepath.FromSlash("_posts/"+file.Filename), data); err == nil{
 					ctx.JSON(http.StatusOK, gin.H{
 						"code": 0,
 						"message": "post uploaded successfully",
@@ -61,7 +61,7 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
 	}
 
 	// test if file already exists
-	if exists, err := pc.FileExists(filepath.FromSlash("_post/"+post.FileName)); err == nil {
+	if exists, err := pc.FileExists(filepath.FromSlash("_posts/"+post.FileName)); err == nil {
 		if exists {
 			ctx.JSON(http.StatusOK, gin.H{
 				"code": 1,
@@ -77,7 +77,7 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
 		return
 	}
 
-	if err := pc.UpdateFile(filepath.FromSlash("_post/"+post.FileName), []byte(post.Content)); err != nil {
+	if err := pc.UpdateFile(filepath.FromSlash("_posts/"+post.FileName), []byte(post.Content)); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"message": "internal error",
@@ -100,7 +100,7 @@ func (pc *PostController) UpdatePost(ctx *gin.Context) {
 	}
 
 	// test if file already exists
-	if exists, err := pc.FileExists(filepath.FromSlash("_post/"+post.FileName)); err == nil {
+	if exists, err := pc.FileExists(filepath.FromSlash("_posts/"+post.FileName)); err == nil {
 		if !exists {
 			ctx.JSON(http.StatusOK, gin.H{
 				"code": 1,
@@ -116,7 +116,7 @@ func (pc *PostController) UpdatePost(ctx *gin.Context) {
 		return
 	}
 
-	if err := pc.UpdateFile(filepath.FromSlash("_post/"+post.FileName), []byte(post.Content)); err != nil {
+	if err := pc.UpdateFile(filepath.FromSlash("_posts/"+post.FileName), []byte(post.Content)); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"message": "internal error",
@@ -142,7 +142,7 @@ func (pc *PostController) ReadPost(ctx *gin.Context) {
 		return
 	}
 
-	if data, err := pc.ReadFile(filepath.FromSlash("_post/" + query.Filename)); err != nil {
+	if data, err := pc.ReadFile(filepath.FromSlash("_posts/" + query.Filename)); err != nil {
 		logrus.WithError(err).Error("reading post failed")
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 1,
