@@ -7,6 +7,7 @@ import (
 	"jekyll_admin/filesystem"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 type PostController struct {
@@ -154,5 +155,74 @@ func (pc *PostController) ReadPost(ctx *gin.Context) {
 			"message": "",
 			"content": string(data),
 		})
+	}
+}
+
+type baseListPostsResp struct {
+	Title string `json:"title"`
+	Date string `json:"date"`
+	Beginning string `json:"beginning"`
+}
+
+type listPostsResp struct {
+	Code int `json:"code"`
+	Message string `json:"message"`
+	Data []*baseListPostsResp `json:"data"`
+}
+
+// /list get
+func (pc *PostController) ListPosts(ctx *gin.Context) {
+	if fis, err := pc.List("/_posts"); err != nil {
+		logrus.WithError(err).Error("listing posts failed")
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"message": "internal error",
+		})
+	} else {
+		var resp listPostsResp
+		for _, fi := range fis {
+			if content, err := pc.ReadFile("_posts/" + fi.Name()); err == nil {
+				terms := strings.Split(fi.Name(), "-")
+				date := strings.Join(terms[0:3], "-")
+				title := strings.Join(terms[3:len(terms)], "")
+				title = title[0:len(title)-3]
+				pattern := []byte{45,45,45}
+				start := 0
+				// skip the header meta information
+				for i := 0; i < len(content); i++ {
+					if i+1 >= len(content) || i+2 >= len(content) {
+						break
+					}
+					if content[i] == pattern[0] && content[i+1] == pattern[1] && content[i+2] == pattern[2] {
+						if i == 0{
+							continue
+						} else {
+							start = i+4
+							break
+						}
+					}
+				}
+				var maxLen = start+100
+				var postfix = "..."
+				if len(content) < maxLen {
+					maxLen = len(content)
+					postfix = ""
+				}
+
+				resp.Data = append(resp.Data, &baseListPostsResp{
+					Title:     title,
+					Date:      date,
+					Beginning: string(content[start:maxLen]) + postfix,
+				})
+			} else {
+				logrus.WithError(err).Error("reading post's content failed")
+				ctx.JSON(http.StatusOK, gin.H{
+					"code": 1,
+					"message": "internal error",
+				})
+				return
+			}
+		}
+		ctx.JSON(http.StatusOK, resp)
 	}
 }

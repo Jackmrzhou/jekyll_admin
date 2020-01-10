@@ -14,6 +14,7 @@ type Config struct {
 	}
 	JekyllRoot string `yaml:"jekyll_root"`
 	Local bool
+	Host string
 }
 
 func InitConfig(dir string) (*Config, error) {

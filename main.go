@@ -9,10 +9,16 @@ import (
 
 func main() {
 	var app *gin.Engine
-	if conf, err := conf.InitConfig(""); err != nil {
+	var config *conf.Config
+	var err error
+	if config, err = conf.InitConfig(""); err != nil {
 		logrus.Fatal("read config failed: ", err)
 	} else {
-		app = routers.InitRouter(conf)
+		app = routers.InitRouter(config)
 	}
-	app.Run("127.0.0.1:8081")
+	var host = "127.0.0.1:8081"
+	if config.Host != "" {
+		host = config.Host
+	}
+	app.Run(host)
 }

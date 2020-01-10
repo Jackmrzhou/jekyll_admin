@@ -11,3 +11,6 @@ jekyll_root: "."
 
 # local or remote
 local: true
+
+# if host is not set, it default to 127.0.0.1:8081
+# host: 127.0.0.1:8081

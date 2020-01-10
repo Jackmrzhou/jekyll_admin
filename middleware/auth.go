@@ -24,6 +24,7 @@ func AuthMiddleware() gin.HandlerFunc {
 				"code": 4001,
 				"message": "invalid token",
 			})
+			ctx.Abort()
 			return
 		}
 		ctx.Next()
